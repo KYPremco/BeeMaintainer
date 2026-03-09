@@ -7,10 +7,10 @@ local event = require("event")
 local TIMER_INTERVAL_IN_SECONDS = 600
 
 local MINIMUM_QUANTITY = 2000000
-local BATCH_SIZE = 25000
+local BATCH_SIZES = { 25000, 10000, 5000, 1000 }
 
 local FLUID_MINIMUM_QUANTITY = 4000000
-local FLUID_BATCH_SIZE = 250000
+local FLUID_BATCH_SIZES = { 250000, 100000, 50000, 10000 }
 
 local RED_COLOR = 0xFF0000
 local GREEN_COLOR = 0x00FF00
@@ -52,11 +52,20 @@ function maintain()
     local subNetworkItems = mapSubNetworkItems()
     
     for itemLabel in pairs(getItemsBelowMinimumQuantity()) do
-        if subNetworkItems[outputs[itemLabel]] == nil then
+        local input = outputs[itemLabel]
+        
+        if subNetworkItems[input] == nil then
+            local itemRequested 
+            
             if (itemLabel:sub(1, 7) == "drop of") then
-                requestItem(itemLabel, outputToCraftables[itemLabel], FLUID_BATCH_SIZE)
+                itemRequested = requestItemWithRetry(itemLabel, outputToCraftables[itemLabel], FLUID_BATCH_SIZES)
             else
-                requestItem(itemLabel, outputToCraftables[itemLabel], BATCH_SIZE)
+                itemRequested = requestItemWithRetry(itemLabel, outputToCraftables[itemLabel], BATCH_SIZES)
+            end
+
+            if itemRequested then
+                console.writeItem(itemLabel, nil, GREEN_COLOR)
+                subNetworkItems[input] = true
             end
         else
             console.writeItem(itemLabel, "Skipped", ORANGE_COLOR)
@@ -64,20 +73,26 @@ function maintain()
     end
 end
 
+function requestItemWithRetry(itemLabel, craftable, quantities)
+    for i = 1, #quantities do
+        if requestItem(itemLabel, craftable, quantities[i]) then
+            console.writeItem(itemLabel, quantity, ORANGE_COLOR)
+            return true
+        end
+    end
+
+    console.writeItem(itemLabel, quantities[#quantities], RED_COLOR)
+    return false
+end
+
 function requestItem(itemLabel, craftable, quantity)
     local request = craftable.request(quantity)
 
-    if request.isDone() then
-        console.writeItem(itemLabel, quantity, ORANGE_COLOR)
-    elseif request.hasFailed() then
-        if quantity > 2000 then
-            requestItem(itemLabel, craftable, math.floor(quantity / 4))
-        else
-            console.writeItem(itemLabel, quantity, RED_COLOR)
-        end
-    else
-        console.writeItem(itemLabel, quantity, ORANGE_COLOR)
+    if request.hasFailed() then
+        return false
     end
+    
+    return true
 end
 
 function mapSubNetworkItems()

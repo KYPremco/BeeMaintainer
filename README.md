@@ -59,9 +59,9 @@ local FLUID_BATCH_SIZE = 250000
 - [X] Sketchy retry logic to try lower quantities of combs
 - [X] Skip logic if the input is already inside the processing network
 - [X] Basic AI made UI to show what finished, added last interval, failed to request
-- [ ] Update the `subNetworkItems` when requesting new combs
-- [ ] Make retry logic configurable with wanted quantities
-  - Do retry logic internal without requesting ot AE2
+- [X] Update the `subNetworkItems` when requesting new combs
+- [X] Make retry logic configurable with wanted quantities 
+- [ ] Do retry logic internal without requesting ot AE2
 - [ ] Make UI update from a table, faster visibility after the script has run
 - [ ] Craftable filter to remove craftables that were not scanned by the interface adapters
   - With this you can manually start specific items without them being maintained
