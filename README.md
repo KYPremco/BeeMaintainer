@@ -61,11 +61,14 @@ local FLUID_BATCH_SIZE = 250000
 - [X] Basic AI made UI to show what finished, added last interval, failed to request
 - [X] Update the `subNetworkItems` when requesting new combs
 - [X] Make retry logic configurable with wanted quantities 
+- [X] Passive comb processing
+  - Input = comb, Output = paper with comb as name eg `Amber Comb`
 - [ ] Do retry logic internal without requesting ot AE2
 - [ ] Make UI update from a table, faster visibility after the script has run
 - [ ] Craftable filter to remove craftables that were not scanned by the interface adapters
   - With this you can manually start specific items without them being maintained
 - [ ] Install/Update script so you can just run the script and it installs the new code
+- [ ] Multiple input combs for same resources
 - [ ] Maybe: custom configuration for specific items
 
 ## Known bugs

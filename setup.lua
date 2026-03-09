@@ -5,18 +5,22 @@ function initialize()
 
     local outputs = registerOutputs()
     
-    local outputToCraftables = mapOutputToCraftables(mainNetwork)
+    local outputToCraftables = mapOutputToCraftables(mainNetwork, outputs)
     
     return mainNetwork, subNetwork, outputs, outputToCraftables
 end
 
-function mapOutputToCraftables(mainNetwork)
+function mapOutputToCraftables(mainNetwork, outputs)
     local outputToCraftables = {}
     
     local craftables = mainNetwork.getCraftables()
 
     for _, craftable in pairs(craftables) do
         outputToCraftables[craftable.getItemStack().label] = craftable
+
+        if craftable.getItemStack().name == "minecraft:paper" then
+            outputs[craftable.getItemStack().label] = craftable.getItemStack().label
+        end
     end
     
     return outputToCraftables
@@ -71,6 +75,10 @@ function registerOutputs()
 
             for _, output in pairs(pattern.outputs) do
                 if output.name ~= nil then
+                    if output.name == "Paper" then
+                        goto continue
+                    end
+                    
                     if outputs[output.name] ~= nil then
                         error("Output: `" .. output.name .. "` has already been registered.")
                     end

@@ -74,7 +74,7 @@ end
 
 function requestItemWithRetry(itemLabel, craftable, quantities)
     for i = 1, #quantities do
-        if requestItem(itemLabel, craftable, quantities[i]) then
+        if requestItem(craftable, quantities[i]) then
             console.writeItem(itemLabel, quantities[i], ORANGE_COLOR)
             return true
         end
@@ -84,7 +84,7 @@ function requestItemWithRetry(itemLabel, craftable, quantities)
     return false
 end
 
-function requestItem(itemLabel, craftable, quantity)
+function requestItem(craftable, quantity)
     local request = craftable.request(quantity)
 
     if request.hasFailed() then
