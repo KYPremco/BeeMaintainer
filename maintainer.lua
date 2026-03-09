@@ -64,7 +64,6 @@ function maintain()
             end
 
             if itemRequested then
-                console.writeItem(itemLabel, nil, GREEN_COLOR)
                 subNetworkItems[input] = true
             end
         else
@@ -76,7 +75,7 @@ end
 function requestItemWithRetry(itemLabel, craftable, quantities)
     for i = 1, #quantities do
         if requestItem(itemLabel, craftable, quantities[i]) then
-            console.writeItem(itemLabel, quantity, ORANGE_COLOR)
+            console.writeItem(itemLabel, quantities[i], ORANGE_COLOR)
             return true
         end
     end
