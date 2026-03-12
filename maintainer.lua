@@ -96,8 +96,8 @@ end
 
 function mapSubNetworkItems()
     local items = {}
-    
-    for item in subNetwork.allItems() do
+
+    for _, item in pairs(subNetwork.getItemsInNetwork()) do
         items[item.label] = true
     end
     
@@ -106,20 +106,13 @@ end
 
 function getItemsBelowMinimumQuantity()
     local itemsBelowMinimumQuantity = {}
-    
-    for item in mainNetwork.allItems() do
-        if not item.isCraftable then
-            goto continue
-        end
 
+    for _, item in pairs(mainNetwork.getItemsInNetwork({ isCraftable = true })) do
         if itemQuantityIsMaintained(item) then
             console.writeItem(item.label, "Ready", GREEN_COLOR)
-            goto continue
+        else
+            itemsBelowMinimumQuantity[item.label] = true
         end
-
-        itemsBelowMinimumQuantity[item.label] = true
-
-        ::continue::
     end
     
     return itemsBelowMinimumQuantity
